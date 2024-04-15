@@ -1,7 +1,10 @@
 module karatsuba_mult (
-    input  logic [7:0] A,
-    input  logic [7:0] B,
-    output logic [15:0] P
+    input clk,
+    input logic start,
+    input  logic [3:0] A,
+    input  logic [3:0] B,
+    output logic [7:0] P,
+    output logic done
 );
 
 // Lookup table for 4-bit multiplications
@@ -15,7 +18,9 @@ initial begin
         end
     end
 end
-
+if (start) begin
+    done <= 0;
+end
 // Split the multiplicands into high and low parts
 logic [3:0] A_high, A_low, B_high, B_low;
 assign A_high = A[7:4];
@@ -31,5 +36,6 @@ assign P_low  = mult_table[{A_low, B_low}];
 
 // Combine the partial products
 assign P = {P_high, 8'b0} + {P_mid, 4'b0} + P_low;
+assign done = 1;
 
 endmodule
